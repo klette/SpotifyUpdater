@@ -100,9 +100,6 @@ static void terminate(void)
 	}
 }
 
-
-
-
 static void wait_for_pl_ack(char* data){
 	printf("Got callback: %s\n",data);
 	got_callback = 1;
@@ -120,19 +117,19 @@ void update_playlists(sp_session *session) {
 	for (i = 0; i < sp_playlistcontainer_num_playlists(pc); i++) {
 		sp_playlist *tpl = sp_playlistcontainer_playlist(pc, i);
 		const char *name = sp_playlist_name(tpl);
+		printf("Testing %s == %s  =>", playlist_name, name);
 		if (strcmp(name, playlist_name) == 0){
 			found = i;
+			printf(" True\n");
+		} else {
+			printf(" False\n");
 		}
+
 	}
 	sp_playlist *pl = NULL;
 
 	if (found == -1){
-		printf("Creating playlist %s\n", playlist_name);
-		pl = sp_playlistcontainer_add_new_playlist(pc, playlist_name);
-		if (pl == NULL) {
-			fprintf(stderr, "failed to create playlist\n");
-			return;
-		}
+		exit(1);
 	} else {
 		fprintf(stderr, "Fetching existing playlist at index %d\n", found);
 		pl = sp_playlistcontainer_playlist(pc, found);

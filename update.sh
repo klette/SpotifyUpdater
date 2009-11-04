@@ -1,11 +1,32 @@
+#!/bin/bash
 # Needs seperate compiles updaters for now..
 
-python -c "import lxml.html; import urllib; print '\n'.join([a.values()[0] for a in lxml.html.document_fromstring(urllib.urlopen('http://spotify.erlang.no').read()).cssselect('#p3')[0].cssselect('a')])" > p3.pls
-python -c "import lxml.html; import urllib; print '\n'.join([a.values()[0] for a in lxml.html.document_fromstring(urllib.urlopen('http://spotify.erlang.no').read()).cssselect('#mpetre')[0].cssselect('a')])" > mp3.pls
-python -c "import lxml.html; import urllib; print '\n'.join([a.values()[0] for a in lxml.html.document_fromstring(urllib.urlopen('http://spotify.erlang.no').read()).cssselect('#vglista')[0].cssselect('a')])" > vg.pls
-python -c "import lxml.html; import urllib; print '\n'.join([a.values()[0] for a in lxml.html.document_fromstring(urllib.urlopen('http://spotify.erlang.no').read()).cssselect('#radio1')[0].cssselect('a')])" > radio1.pls
+USERNAME=username
+PASSWORD=pass
 
-./updater-p3 username pass
-./updater-mp3 username pass
-./updater-vg username pass
-./updater-radio1 username pass
+python fetch_lists.py
+
+./updater-p3 $USERNAME $PASSWORD
+while [ $? -ne 0 ]; do
+	echo "Playlist not found.. Spotify sucks, so we try again.."
+	sleep 5
+	./updater-p3 $USERNAME $PASSWORD
+done
+./updater-mp3 $USERNAME $PASSWORD
+while [ $? -ne 0 ]; do
+	echo "Playlist not found.. Spotify sucks, so we try again.."
+	sleep 5
+	./updater-mp3 $USERNAME $PASSWORD
+done
+./updater-vg $USERNAME $PASSWORD
+while [ $? -ne 0 ]; do
+	echo "Playlist not found.. Spotify sucks, so we try again.."
+	sleep 5
+	./updater-vg $USERNAME $PASSWORD
+done
+./updater-radio1 $USERNAME $PASSWORD
+while [ $? -ne 0 ]; do
+	echo "Playlist not found.. Spotify sucks, so we try again.."
+	sleep 5
+	./updater-radio1 $USERNAME $PASSWORD
+done
